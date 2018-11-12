@@ -11,10 +11,10 @@ num_ks_2 = 30
 k_size_2 = 500
 pool_1 = 100
 
-nn_input_size = 1000
+nn_input_size = 200000
 hid_layers_1_num = 100
 hid_layers_2_num = 10
-num_genres = 1
+num_genres = 2
 
 
 class ConvClassifier(nn.Module):
@@ -30,7 +30,6 @@ class ConvClassifier(nn.Module):
 
     def forward(self, x):
         dummy_layer = nn.Linear(nn_input_size, num_genres).float()
-        x = x.squeeze(0)
         x = dummy_layer(x.float())
         x = F.softmax(x)
         return x

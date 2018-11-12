@@ -36,7 +36,7 @@ def evaluate(model, val_loader):
 
 data_filepath = "./processed_data/final_data"
 
-batch_size = 2
+batch_size = 3
 learn_rate = 0.8
 MaxEpochs = 100
 eval_every = 2
@@ -94,5 +94,5 @@ for counter, epoch in enumerate(range(MaxEpochs)):
         torch.save(model, "best_model")
     print("Epoch ", counter, " complete")
 
-    plot_accuracy_vs_stepnum(step_list, train_data_list, "Train", 5, 3)  #Make plots of accuacuers
-    plot_accuracy_vs_stepnum(step_list, val_data_list, "Validation", 11, 5)
+plot_accuracy_vs_stepnum(step_list, train_data_list, "Train", 5, 3)  #Make plots of accuacuers
+plot_accuracy_vs_stepnum(step_list, val_data_list, "Validation", 11, 5)
