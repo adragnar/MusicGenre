@@ -49,17 +49,16 @@ if cache_token:
                     download_mp3_from_url(metadata[track['track']['id']]["prev"], os.path.join("./songs", plist), track['track']['id'])
                 else:
                     pass
-<<<<<<< HEAD
+
                     # sp.user_playlist_remove_specific_occurrences_of_tracks(username, playlist_urls[plist], list({"uri": track['track']['id'], "positions":[i]}))
 
     metadata_all_songs.update(metadata)  # Add update metadata of all songs
     json.dump(metadata_all_songs, open("./data/curr_songs_include.json", "w"))
-=======
+
                     #sp.user_playlist_remove_specific_occurrences_of_tracks(username, playlist_urls[plist], list({"uri": track['track']['id'], "positions":[i]}))
 
     metadata_all_songs.update(metadata)  #Add update metadata of all songs
     json.dump(metadata_all_songs, open("./processed_data/song_metadata/curr_songs_include.json", "w"))
->>>>>>> 09c5e12ed107617b4515d90ad46c332cb92f67fe
 
 else:
     print("Can't get token for", username)
