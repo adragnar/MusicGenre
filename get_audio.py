@@ -69,11 +69,10 @@ if cache_token:
                     test = test + 1
                     print(test)
                     pass
-
-                    #sp.user_playlist_remove_specific_occurrences_of_tracks(username, playlist_urls[plist], list({"uri": track['track']['id'], "positions":[i]}))
+                    # sp.user_playlist_remove_specific_occurrences_of_tracks(username, playlist_urls[plist], list({"uri": track['track']['id'], "positions":[i]}))
 
     metadata_all_songs.update(metadata)  #Add update metadata of all songs
     json.dump(metadata_all_songs, open("./processed_data/song_metadata/curr_songs_include.json", "w"))
 
 else:
-    print ("Can't get token for", username)
+    print("Can't get token for", username)

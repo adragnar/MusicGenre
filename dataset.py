@@ -1,6 +1,7 @@
 import torch.utils.data as data
 import numpy as np
 
+
 class SongDataset(data.Dataset):
     '''Instantiate a Dataset object for data'''
     def __init__(self, songs_path, labels_path):
@@ -11,14 +12,13 @@ class SongDataset(data.Dataset):
         self.features = np.load(songs_path)
         self.labels = np.load(labels_path)
 
-
-    def __len__(self):  #return number of different songs that are in dataset
+    def __len__(self):  # return number of different songs that are in dataset
         return self.features.shape[0]
 
-
-    def __getitem__(self, index):  #return audio encoding of ith song in dataset and label
+    def __getitem__(self, index):  # return audio encoding of ith song in dataset and label
         ######
 
         # 3.1 YOUR CODE HERE
-        return self.features[index,:], self.labels[index]
+        return self.features[index, :], self.labels[index]
+
         ######
