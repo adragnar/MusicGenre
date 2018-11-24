@@ -66,17 +66,17 @@ class ConvClassifier2D(nn.Module):
         super(ConvClassifier2D, self).__init__()
         self.num_processed = 1
         self.num_ks = [50, 30]
-        self.k_size = [(4, 600), (2, 50)]
-        self.pool = [5, 1]
+        self.k_size = [(600, 4), (50, 2)]
+        self.pool = [(2, 1), (2, 1)]
         self.hid_layers = [100, 10, num_of_genres]
         self.batch_size = batch_size
         self.input_dimensions = input_dimensions
 
-        a = input_dimensions[0]
-        b = input_dimensions[1]
+        a = input_dimensions[0]  #Dimension size of all FT coeffs
+        b = input_dimensions[1]  #Dimension of #time samples
         for i in range(len(self.num_ks)):
-            a = int((a - self.k_size[i][0] + 1) / self.pool[i])
-            b = int((b - self.k_size[i][1] + 1) / self.pool[i])
+            a = int((a - self.k_size[i][0] + 1) / self.pool[i][0])
+            b = int((b - self.k_size[i][1] + 1) / self.pool[i][1])
 
         self.input_size = a * b * self.num_ks[-1]
 
