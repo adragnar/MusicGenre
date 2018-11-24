@@ -46,9 +46,9 @@ data_filepath = "./final_data"
 
 # HYPERPARAMETERS
 batch_size = 50
-learn_rate = 0.5
+learn_rate = 0.1
 MaxEpochs = 100
-eval_every = 10
+eval_every = 25
 num_genres = 5
 input_dimensions = (1000, 200)
 
@@ -66,6 +66,7 @@ leftover = 0
 step_list = []
 train_data_list = []
 val_data_list = []
+data = []
 best_val_acc = 0
 
 tot_corr = 0
@@ -100,7 +101,13 @@ for counter, epoch in enumerate(range(MaxEpochs)):
 
             train_data_list.append(train_acc)
             val_data_list.append(val_acc)
+            
+            data.append(np.array([counter, i, train_acc, val_acc]))
+
             tot_corr = 0
+
+        # SAVE RESULTS
+        np.savetxt("results.txt", np.array(data), delimiter = ',')
 
     leftover = ((len(train_loader) % eval_every) * (counter + 1)) % eval_every
     if val_data_list[-1] > best_val_acc:  # Check model performance and save if best
