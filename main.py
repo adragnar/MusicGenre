@@ -8,6 +8,8 @@ from model import *
 import matplotlib.pyplot as plt
 import scipy.signal as sig
 
+#For using GPU
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 def plot_accuracy_vs_stepnum(step_list, data_list, label, sig_fact_1, sig_fact_2):
     plt.figure()
@@ -53,6 +55,7 @@ train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
 val_loader = DataLoader(val_data, batch_size=batch_size, shuffle=False)
 
 model = ConvClassifier2D(batch_size, num_genres, input_dimensions)  # ConvClassifier1D() for raw audio, ConvClassifier2D() for Fourier transformed data
+model = model.to(device)
 loss_fnc = torch.nn.BCELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
 
@@ -66,6 +69,8 @@ tot_corr = 0
 for counter, epoch in enumerate(range(MaxEpochs)):
     for i, batch in enumerate(train_loader):
         feats, labels = batch
+        feats = feats.to(device)
+        labels = labels.to(device)
         optimizer.zero_grad()
         predictions = model.forward(feats)
         batch_loss = loss_fnc(input=predictions.float(), target=labels.float())
