@@ -88,28 +88,29 @@ def decode_audio_toarray(songdir_path, saveasfilename):
     i = 1
     samples_array = []
     files = os.listdir(songdir_path) 
+    no_of_files = len(files)
     for song_path in files:
         # song_path = os.path.join(songdir_path, str(i) + '.mp3')
         y, sr = librosa.load(songdir_path+song_path)
 
         # Take 2 samples of length 200,000 (roughly 10 seconds) from each song, spaced evenly apart
-        start1 = 100
-        start2 = int(1 * y.shape[0] / 2)
-        # start3 = int(3 * y.shape[0] / 6)
-        # start4 = int(4 * y.shape[0] / 6)
-        # start5 = int(5 * y.shape[0] / 6)
-        end1 = start1 + 200000
-        end2 = start2 + 200000
-        # end3 = start3 + 200000
-        # end4 = start4 + 200000
-        # end5 = start5 + 200000
-        samples_array.append(y[start1:end1])
-        samples_array.append(y[start2:end2])
-        # samples_array.append(y[start3:end3])
-        # samples_array.append(y[start4:end4])
-        # samples_array.append(y[start5:end5])
+        start = int(1 * y.shape[0] / 2)
+        end = start + 200000
+        samples_array.append(y[start:end])
 
         i += 1
+        if i % 100 == 0:
+            print(i)
+
+    if no_of_files <= 1000:
+        for song_path in files:
+            y, sr = librosa.load(songdir_path+song_path)
+            start = 10
+            end = start + 200000
+            samples_array.append(y[start:end])
+            i += 1
+            if i > 1100:
+                break
 
     array = np.array(samples_array)
     print(array.shape)
@@ -165,30 +166,30 @@ def fourier_transform(filename):
 
 
 if __name__ == "__main__":
-    #download_all_songs()  #Download all mp3 files from the server
+    download_all_songs()  #Download all mp3 files from the server
 
     #Cut all audio samples into two and then save into array
-    # decode_audio_toarray('songs/classical/', 'data/classical_songs.npy')
-    # normalize_data("data/classical_songs.npy")
-    # print(1)
-    # decode_audio_toarray('songs/jazz/', 'data/jazz_songs.npy')
-    # normalize_data("data/jazz_songs.npy")
-    # print(1)
-    # decode_audio_toarray('songs/pop/', 'data/pop_songs.npy')
-    # normalize_data("data/pop_songs.npy")
-    # print(1)
-    # decode_audio_toarray('songs/rap/', 'data/rap_songs.npy')
-    # normalize_data("data/rap_songs.npy")
-    # print(1)
-    # decode_audio_toarray('songs/rock/', 'data/rock_songs.npy')
-    # normalize_data("data/rock_songs.npy")
+    decode_audio_toarray('songs/classical/', 'data/classical_songs.npy')
+    normalize_data("data/classical_songs.npy")
+    print(1)
+    decode_audio_toarray('songs/jazz/', 'data/jazz_songs.npy')
+    normalize_data("data/jazz_songs.npy")
+    print(1)
+    decode_audio_toarray('songs/pop/', 'data/pop_songs.npy')
+    normalize_data("data/pop_songs.npy")
+    print(1)
+    decode_audio_toarray('songs/rap/', 'data/rap_songs.npy')
+    normalize_data("data/rap_songs.npy")
+    print(1)
+    decode_audio_toarray('songs/rock/', 'data/rock_songs.npy')
+    normalize_data("data/rock_songs.npy")
 
-    # # Make sure there are same number of samples for each of rock, pop, and rap songs - put into data folder
-    # pick_samples("data/rock_songs_normalized.npy", 100)
-    # pick_samples("data/rap_songs_normalized.npy", 100)
-    # pick_samples("data/pop_songs_normalized.npy", 100)
-    # pick_samples("data/jazz_songs_normalized.npy", 100)
-    #pick_samples("data/classical_songs_normalized.npy", 100)
+    # Make sure there are same number of samples for each of rock, pop, and rap songs - put into data folder
+    pick_samples("data/rock_songs_normalized.npy", 1000)
+    pick_samples("data/rap_songs_normalized.npy", 1000)
+    pick_samples("data/pop_songs_normalized.npy", 1000)
+    pick_samples("data/jazz_songs_normalized.npy", 1000)
+    ick_samples("data/classical_songs_normalized.npy", 1000)
 
     concat_data_and_gen_labels("data/norm_data")
     fourier_transform("final_data/all_songs.npy")

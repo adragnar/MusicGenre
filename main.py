@@ -42,8 +42,8 @@ def evaluate(model, val_loader):
 data_filepath = "./final_data"
 
 # HYPERPARAMETERS
-batch_size = 5
-learn_rate = 0.8
+batch_size = 20
+learn_rate = 0.5
 MaxEpochs = 100
 eval_every = 10
 num_genres = 5
