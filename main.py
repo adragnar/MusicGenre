@@ -40,11 +40,11 @@ def evaluate(model, val_loader):
 data_filepath = "./final_data"
 
 # HYPERPARAMETERS
-batch_size = 3
+batch_size = 5
 learn_rate = 0.8
-MaxEpochs = 3
-eval_every = 100
-num_genres = 3
+MaxEpochs = 100
+eval_every = 10
+num_genres = 5
 input_dimensions = (1000, 200)
 
 train_data = SongDataset(os.path.join(data_filepath, "train_data.npy"), os.path.join(data_filepath, "train_labels.npy"))

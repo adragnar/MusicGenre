@@ -67,7 +67,7 @@ class ConvClassifier2D(nn.Module):
         self.num_processed = 1
         self.num_ks = [50, 30]
         self.k_size = [20, 15]
-        self.pool = [10, 1]
+        self.pool = [5, 1]
         self.hid_layers = [100, 10, num_of_genres]
         self.batch_size = batch_size
         self.input_dimensions = input_dimensions
