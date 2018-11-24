@@ -23,8 +23,8 @@ def plot_accuracy_vs_stepnum(step_list, data_list, label, sig_fact_1, sig_fact_2
 
 def find_num_correct(predictions, label):
     '''Takes in an array of predictions and of labels. Returns the number of these predicitons that are correct'''
-    predictions = np.argmax((predictions.detach().numpy()), axis=1)  # Both prediction and label 1xnum_genre vectors
-    label = np.argmax((label.detach().numpy()), axis=1)
+    predictions = np.argmax((predictions.cpu().detach().numpy()), axis=1)  # Both prediction and label 1xnum_genre vectors
+    label = np.argmax((label.cpu().detach().numpy()), axis=1)
     b = (predictions == label)
     corr_num = int(b.sum())
     return corr_num
@@ -34,6 +34,9 @@ def evaluate(model, val_loader):
     total_corr = 0
     for i, batch in enumerate(val_loader):
         feats, labels = batch
+        feats = feats.to(device)
+        labels = labels.to(device)
+        #print(feats.shape)
         predictions = model.forward(feats)
         total_corr += find_num_correct(predictions, labels)
     return float(total_corr)/len(val_loader.dataset)
@@ -42,7 +45,7 @@ def evaluate(model, val_loader):
 data_filepath = "./final_data"
 
 # HYPERPARAMETERS
-batch_size = 20
+batch_size = 50
 learn_rate = 0.5
 MaxEpochs = 100
 eval_every = 10

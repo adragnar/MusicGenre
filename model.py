@@ -16,6 +16,8 @@ hid_layers_1_num = 100
 hid_layers_2_num = 10
 num_genres = 3
 
+# Use GPU
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 class ConvClassifier1D(nn.Module):
     def __init__(self, batch_size, num_of_genres):
@@ -78,7 +80,7 @@ class ConvClassifier2D(nn.Module):
             a = int((a - self.k_size[i][0] + 1) / self.pool[i][0])
             b = int((b - self.k_size[i][1] + 1) / self.pool[i][1])
 
-        self.input_size = a * b * self.num_ks[-1]
+        self.input_size = 887880  #a * b * self.num_ks[-1]
 
         self.conv1 = nn.Conv2d(self.num_processed, self.num_ks[0], self.k_size[0]).float()
         self.pool1 = nn.MaxPool2d(self.pool[0])
@@ -105,3 +107,5 @@ class ConvClassifier2D(nn.Module):
         x = F.softmax(x)
         #print(x.shape)
         return x
+
+#model = ConvClassifier2D().to(device)
