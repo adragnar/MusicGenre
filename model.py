@@ -66,7 +66,7 @@ class ConvClassifier2D(nn.Module):
         super(ConvClassifier2D, self).__init__()
         self.num_processed = 1
         self.num_ks = [50, 30]
-        self.k_size = [20, 15]
+        self.k_size = [(4, 600), (2, 50)]
         self.pool = [5, 1]
         self.hid_layers = [100, 10, num_of_genres]
         self.batch_size = batch_size
@@ -75,8 +75,8 @@ class ConvClassifier2D(nn.Module):
         a = input_dimensions[0]
         b = input_dimensions[1]
         for i in range(len(self.num_ks)):
-            a = int((a - self.k_size[i] + 1) / self.pool[i])
-            b = int((b - self.k_size[i] + 1) / self.pool[i])
+            a = int((a - self.k_size[i][0] + 1) / self.pool[i])
+            b = int((b - self.k_size[i][1] + 1) / self.pool[i])
 
         self.input_size = a * b * self.num_ks[-1]
 

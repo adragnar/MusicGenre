@@ -7,7 +7,7 @@ import glob
 import os
 import random
 from train_test_split import *
-from get_audio import *
+from get_audio import download_all_songs
 
 
 # Rename mp3 files into 1.mp3, 2.mp3, ..., n.mp3 in each folder
@@ -165,35 +165,29 @@ def fourier_transform(filename):
 
 
 if __name__ == "__main__":
-    pass
-    
+    #download_all_songs()  #Download all mp3 files from the server
 
-    #rename_file('songs/classical', r'*.mp3')
-    #rename_file('songs/jazz', r'*.mp3')
-    #rename_file('songs/pop', r'*.mp3')
-    #rename_file('songs/rap', r'*.mp3')
-    #rename_file('songs/rock', r'*.mp3')
+    #Cut all audio samples into two and then save into array
+    # decode_audio_toarray('songs/classical/', 'data/classical_songs.npy')
+    # normalize_data("data/classical_songs.npy")
+    # print(1)
+    # decode_audio_toarray('songs/jazz/', 'data/jazz_songs.npy')
+    # normalize_data("data/jazz_songs.npy")
+    # print(1)
+    # decode_audio_toarray('songs/pop/', 'data/pop_songs.npy')
+    # normalize_data("data/pop_songs.npy")
+    # print(1)
+    # decode_audio_toarray('songs/rap/', 'data/rap_songs.npy')
+    # normalize_data("data/rap_songs.npy")
+    # print(1)
+    # decode_audio_toarray('songs/rock/', 'data/rock_songs.npy')
+    # normalize_data("data/rock_songs.npy")
 
-    #decode_audio_toarray('songs/classical/', 'data/classical_songs.npy')
-    #normalize_data("data/classical_songs.npy")
-    #print(1)
-    #decode_audio_toarray('songs/jazz/', 'data/jazz_songs.npy')
-    #normalize_data("data/jazz_songs.npy")
-    #print(1)
-    #decode_audio_toarray('songs/pop/', 'data/pop_songs.npy')
-    #normalize_data("data/pop_songs.npy")
-    #print(1)
-    #decode_audio_toarray('songs/rap/', 'data/rap_songs.npy')
-    #normalize_data("data/rap_songs.npy")
-    #print(1)
-    #decode_audio_toarray('songs/rock/', 'data/rock_songs.npy')
-    #normalize_data("data/rock_songs.npy")
-
-    # Make sure there are same number of samples for each of rock, pop, and rap songs
-    #pick_samples("data/rock_songs_normalized.npy", 100)
-    #pick_samples("data/rap_songs_normalized.npy", 100)
-    #pick_samples("data/pop_songs_normalized.npy", 100)
-    #pick_samples("data/jazz_songs_normalized.npy", 100)
+    # # Make sure there are same number of samples for each of rock, pop, and rap songs - put into data folder
+    # pick_samples("data/rock_songs_normalized.npy", 100)
+    # pick_samples("data/rap_songs_normalized.npy", 100)
+    # pick_samples("data/pop_songs_normalized.npy", 100)
+    # pick_samples("data/jazz_songs_normalized.npy", 100)
     #pick_samples("data/classical_songs_normalized.npy", 100)
 
     concat_data_and_gen_labels("data/norm_data")

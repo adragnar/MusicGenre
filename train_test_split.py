@@ -28,7 +28,7 @@ def concat_data_and_gen_labels(dir_path):
     labels = label_encoder.fit_transform(labels)
     labels = oneh_encoder.fit_transform(labels.reshape(-1, 1))
 
-    np.save("./final_data/all_songs_fft.npy", all_song_data)
+    np.save("./final_data/all_songs.npy", all_song_data)
     np.save("./final_data/all_labels.npy", labels)
 
 
