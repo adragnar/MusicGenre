@@ -6,7 +6,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy.util as util
 import requests
 
-def get_playlist_tracks(username, playlist_id, playlist_length):
+def get_playlist_tracks(sp, username, playlist_id, playlist_length):
     results = sp.user_playlist_tracks(username, playlist_id, fields="items(track(name,href,album(name,href), preview_url, id))")
     tracks = results['items']
 
@@ -56,7 +56,7 @@ def download_all_songs() :
         except:
             metadata_all_songs = {}
         for plist in playlist_urls:
-            playlist_tracks = get_playlist_tracks(username, playlist_urls[plist], playlist_lengths[plist])
+            playlist_tracks = get_playlist_tracks(sp, username, playlist_urls[plist], playlist_lengths[plist])
             #playlist_tracks = sp.user_playlist_tracks(username, playlist_urls[plist], fields="items(track(name,href,album(name,href), preview_url, id))")  #The track we want to deal with has preview link at external_urls field
             metadata = {}
             for i, track in enumerate(playlist_tracks):
