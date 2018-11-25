@@ -20,31 +20,34 @@ num_genres = 3
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 class ConvClassifier1D(nn.Module):
-    def __init__(self, batch_size, num_of_genres):
-        '''Model Archetecture: 2 1D conv layers with 1 maxpooling in between'''
+    def __init__(self, batch_size, num_of_genres, input_dimensions):
+        '''Model Archetecture: 2 2D conv layers with 1 maxpooling in between'''
         super(ConvClassifier1D, self).__init__()
         self.num_processed = 1
-        self.num_ks_1 = 50
-        self.k_size_1 = 500
-        self.num_ks_2 = 30
-        self.k_size_2 = 100
-        self.pool_1 = 100
-        self.hid_layers_1_num = 100
-        self.hid_layers_2_num = 10
-        self.num_genres = num_of_genres
-
-        self.conv1 = nn.Conv1d(1, 50, 500).float()
-        self.pool1 = nn.MaxPool1d(100)
-        self.conv2 = nn.Conv1d(50, 30, 100).float()
-        self.fc1 = nn.Linear(3360*batch_size, 100)
-        self.fc2 = nn.Linear(100, 10)
-        self.fc3 = nn.Linear(10, 3)
+        self.num_ks = [100, 50]
+        self.k_size = [2000, 200, 10]
+        self.pool = [10, 10]
+        self.hid_layers = [30, 10, num_of_genres]
         self.batch_size = batch_size
+        self.input_dimensions = input_dimensions
+
+        a = input_dimensions[0]  #Dimension size of all FT coeffs
+        b = input_dimensions[1]  #Dimension of #time samples
+        for i in range(len(self.num_ks)):
+            a = int((a - self.k_size[i] + 1) / self.pool[i])
+
+        self.input_size =  a * self.num_ks[-1]
+
+        self.conv1 = nn.Conv1d(self.num_processed, self.num_ks[0], self.k_size[0]).float()
+        self.pool1 = nn.MaxPoold(self.pool[0])
+        self.conv2 = nn.Conv1d(self.num_ks[0], self.num_ks[1], self.k_size[1]).float()
+        self.fc1 = nn.Linear(self.input_size, self.hid_layers[0])
+        self.fc2 = nn.Linear(self.hid_layers[0], self.hid_layers[1])
+        self.fc3 = nn.Linear(self.hid_layers[1], self.hid_layers[2])
 
     def forward(self, x):
         # dummy_layer = nn.Linear(nn_input_size, num_genres).float()
         # x = dummy_layer(x.float())
-        # assert (x.shape[1] == 200000)  # Just in case we forget to change nn_input_size
         x = (x.unsqueeze(1)).float()
         x = self.conv1(x)
         #print(x.shape)
