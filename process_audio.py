@@ -156,11 +156,11 @@ def fourier_transform(filename):
     for i in range(arr.shape[0]):
         n = 0
         fft = []
-        for j in range(1000):
-            a = arr[i, n:n+200]
+        for j in range(100):
+            a = arr[i, n:n+2000]
             np.fft.fft(a, n=None, axis=-1, norm=None)
             fft.append(a)
-            n += 200
+            n += 2000
         new_arr.append(np.array(fft))
     new_arr = np.array(new_arr)
     print(new_arr.shape)
@@ -191,8 +191,8 @@ if __name__ == "__main__":
     #pick_samples("data/rap_songs_normalized.npy", 1000)
     #pick_samples("data/pop_songs_normalized.npy", 1000)
     #pick_samples("data/jazz_songs_normalized.npy", 1000)
-    pick_samples("data/classical_songs_normalized.npy", 1000)
+    #pick_samples("data/classical_songs_normalized.npy", 1000)
 
-    concat_data_and_gen_labels("data/norm_data")
+    #concat_data_and_gen_labels("data/norm_data")
     fourier_transform("final_data/all_songs.npy")
     split_data("./final_data/all_songs_fft.npy", "./final_data/all_labels.npy")

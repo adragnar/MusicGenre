@@ -39,18 +39,20 @@ def evaluate(model, val_loader):
         #print(feats.shape)
         predictions = model.forward(feats)
         total_corr += find_num_correct(predictions, labels)
+        #print(total_corr)
+    #print(len(val_loader.dataset))
     return float(total_corr)/len(val_loader.dataset)
 
 
 data_filepath = "./final_data"
 
 # HYPERPARAMETERS
-batch_size = 50
-learn_rate = 0.1
-MaxEpochs = 100
-eval_every = 25
-num_genres = 5
-input_dimensions = (1000, 200)
+batch_size = 20
+learn_rate = 0.001  # Decreases with epoch
+MaxEpochs = 500
+eval_every = 20
+num_genres = 4
+input_dimensions = (100, 2000)
 
 train_data = SongDataset(os.path.join(data_filepath, "train_data.npy"), os.path.join(data_filepath, "train_labels.npy"))
 val_data = SongDataset(os.path.join(data_filepath, "val_data.npy"), os.path.join(data_filepath, "val_labels.npy"))
@@ -60,7 +62,7 @@ val_loader = DataLoader(val_data, batch_size=batch_size, shuffle=False)
 model = ConvClassifier2D(batch_size, num_genres, input_dimensions)  # ConvClassifier1D() for raw audio, ConvClassifier2D() for Fourier transformed data
 model = model.to(device)
 loss_fnc = torch.nn.BCELoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
+#optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
 
 leftover = 0
 step_list = []
@@ -71,6 +73,8 @@ best_val_acc = 0
 
 tot_corr = 0
 for counter, epoch in enumerate(range(MaxEpochs)):
+    optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
+    learn_rate = learn_rate/1.1 # Decrease every epoch
     for i, batch in enumerate(train_loader):
         feats, labels = batch
         feats = feats.to(device)
@@ -82,7 +86,7 @@ for counter, epoch in enumerate(range(MaxEpochs)):
         optimizer.step()
 
         tot_corr += find_num_correct(predictions, labels)
-        print(1)
+        #print(1)
 
         # Evaluate and log losses and accuracies for plotting
         if ((i + leftover) % eval_every == 0) and ((i + leftover) != 0):  # Leftover makes sure that even if batch size goes over, you graph every eval_evry steps
@@ -110,9 +114,11 @@ for counter, epoch in enumerate(range(MaxEpochs)):
         np.savetxt("results.txt", np.array(data), delimiter = ',')
 
     leftover = ((len(train_loader) % eval_every) * (counter + 1)) % eval_every
-    if val_data_list[-1] > best_val_acc:  # Check model performance and save if best
-        best_val_acc = val_data_list[-1]
-        torch.save(model, "best_model")
+    
+    if len(val_data_list) > 0:
+        if val_data_list[-1] > best_val_acc:  # Check model performance and save if best
+            best_val_acc = val_data_list[-1]
+            torch.save(model, "best_model")
     print("Epoch ", counter, " complete")
 
 plot_accuracy_vs_stepnum(step_list, train_data_list, "Train", 5, 3)  # Make plots of accuacuers
