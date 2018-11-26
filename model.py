@@ -120,3 +120,22 @@ class ConvClassifier2D(nn.Module):
         return x
 
 #model = ConvClassifier2D().to(device)
+
+class RNNClassifier(nn.Module):
+    def __init__(self, embedding_dim, hidden_dim, num_genres):
+        super(RNNClassifier, self).__init__()
+
+        self.num_layers = 1
+        self.gru = nn.GRU(input_size=embedding_dim, hidden_size=hidden_dim, num_layers=self.num_layers)
+        self.linear = nn.Linear(hidden_dim, num_genres)
+
+    def forward(self, x):
+        x = x.float()
+        output, h_n = self.gru(x) # or x.transpose(0, 1)
+        x = h_n[0].float()
+        #print(x.shape)
+        x = self.linear(x)
+        #print(x.shape)
+        x = F.softmax(x)
+        return x
+
