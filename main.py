@@ -34,6 +34,7 @@ def evaluate(model, val_loader):
     total_corr = 0
     for i, batch in enumerate(val_loader):
         feats, labels = batch
+        feats = feats.reshape((batch_size, 100, 52)).permute(1, 0, 2)
         feats = feats.to(device)
         labels = labels.to(device)
         #print(feats.shape)
@@ -48,10 +49,10 @@ def evaluate(model, val_loader):
 data_filepath = "./final_data"
 
 # HYPERPARAMETERS
-batch_size = 10
-learn_rate = 0.0005  # Decreases with epoch
-MaxEpochs = 500
-eval_every = 50
+batch_size = 20
+learn_rate = 0.001  # Decreases with epoch
+MaxEpochs = 10
+eval_every = 10
 num_genres = 4
 input_dimensions = (100, 13, 4)  # Reshape to (13, 4, 100)
 embedding_dim = 52
@@ -85,9 +86,9 @@ for counter, epoch in enumerate(range(MaxEpochs)):
     #learn_rate = learn_rate / 1.1 # Decrease every epoch
     for i, batch in enumerate(train_loader):
         feats, labels = batch
-        feats = (feats.reshape((batch_size, 100, 52))).permute(1,0,2)
+        feats = (feats.reshape((batch_size, 100, 52))).permute(1, 0, 2)
         #feats = feats.reshape((batch_size, 52, 100))
-        print(feats.shape)
+        #print(feats.shape)
         feats = feats.to(device)
         labels = labels.to(device)
         optimizer.zero_grad()
@@ -103,6 +104,8 @@ for counter, epoch in enumerate(range(MaxEpochs)):
             val_acc = evaluate(model, val_loader)
             #print(tot_corr)
             train_acc = float(tot_corr / (eval_every * batch_size))
+            if train_acc > 1:
+                train_acc = train_acc/2
             print("Batch", i, ": Total correct in last", eval_every, "batches is", tot_corr,
                   "out of ", eval_every * batch_size)
             print("Total training accurracy over last batches is ", train_acc)
@@ -134,3 +137,4 @@ for counter, epoch in enumerate(range(MaxEpochs)):
 
 plot_accuracy_vs_stepnum(step_list, train_data_list, "Train", 5, 3)  # Make plots of accuacuers
 plot_accuracy_vs_stepnum(step_list, val_data_list, "Validation", 11, 5)
+

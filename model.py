@@ -133,9 +133,9 @@ class RNNClassifier(nn.Module):
         x = x.float()
         output, h_n = self.gru(x) # or x.transpose(0, 1)
         x = h_n[0].float()
-        print(x.shape)
+        #print(x.shape)
         x = self.linear(x)
-        print(x.shape)
+        #print(x.shape)
         x = F.softmax(x)
         return x
 
