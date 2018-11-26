@@ -60,19 +60,20 @@ def download_all_songs() :
             #playlist_tracks = sp.user_playlist_tracks(username, playlist_urls[plist], fields="items(track(name,href,album(name,href), preview_url, id))")  #The track we want to deal with has preview link at external_urls field
             metadata = {}
             for i, track in enumerate(playlist_tracks):
-                if track['track']['id'] not in metadata_all_songs.keys():
-                    if track['track']['preview_url'] is not None:
-                        metadata[track['track']['id']] = {}  #update metadata
-                        metadata[track['track']['id']]["name"] = track['track']['name']
-                        metadata[track['track']['id']]["album"] = track['track']['album']
-                        metadata[track['track']['id']]["prev"] = track['track']['preview_url']
-                        metadata[track['track']['id']]["genre"] = plist
-                        download_mp3_from_url(metadata[track['track']['id']]["prev"], os.path.join("./songs", plist), track['track']['id'])
-                    else:
-                        test = test + 1
-                        print(test)
-                        pass
-                        # sp.user_playlist_remove_specific_occurrences_of_tracks(username, playlist_urls[plist], list({"uri": track['track']['id'], "positions":[i]}))
+                if i < 50:
+                    if track['track']['id'] not in metadata_all_songs.keys():
+                        if track['track']['preview_url'] is not None:
+                            metadata[track['track']['id']] = {}  #update metadata
+                            metadata[track['track']['id']]["name"] = track['track']['name']
+                            metadata[track['track']['id']]["album"] = track['track']['album']
+                            metadata[track['track']['id']]["prev"] = track['track']['preview_url']
+                            metadata[track['track']['id']]["genre"] = plist
+                            download_mp3_from_url(metadata[track['track']['id']]["prev"], os.path.join("./songs", plist), track['track']['id'])
+                        else:
+                            test = test + 1
+                            print(test)
+                            pass
+                            # sp.user_playlist_remove_specific_occurrences_of_tracks(username, playlist_urls[plist], list({"uri": track['track']['id'], "positions":[i]}))
 
         metadata_all_songs.update(metadata)  #Add update metadata of all songs
         json.dump(metadata_all_songs, open("./processed_data/song_metadata/curr_songs_include.json", "w"))

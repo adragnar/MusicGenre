@@ -149,8 +149,11 @@ def merge_samples(list_of_array_files, list_of_labels):
     np.save("data/all_labels.npy", label)
 
 
-def fourier_transform(filename):
-    arr = np.load(filename)
+def fourier_transform(filename, no_save=False):
+    if no_save:
+        arr = filename
+    else:
+        arr = np.load(filename)
     print(arr.shape)
     sr = 22500  # Data points per second
     new_arr = []
@@ -185,7 +188,10 @@ def fourier_transform(filename):
     #new_arr = np.array(new_arr)
     print(mfcc_arr.shape)
     #print(new_arr.shape)
-    np.save("mfcc_feats.npy", mfcc_arr)
+    if no_save:
+        return mfcc_arr
+    else:
+        np.save("mfcc_feats.npy", mfcc_arr)
     #np.save(filename.strip(".npy")+"_fft.npy", new_arr)
 
 
@@ -217,5 +223,3 @@ if __name__ == "__main__":
 
     #concat_data_and_gen_labels("data/norm_data")
     fourier_transform("final_data/all_songs.npy")
-
-    split_data("./final_data/mfcc_feats.npy", "./final_data/all_labels.npy")

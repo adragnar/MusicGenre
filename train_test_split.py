@@ -13,6 +13,7 @@ def concat_data_and_gen_labels(dir_path):
     for genre_data_file in os.listdir(dir_path):  # Concat all data and create label list
         genre_name = (genre_data_file.split("_"))[0]  # assumes genre name is first phrase in path
         song_data = np.load(os.path.join(dir_path, genre_data_file))
+        song_data = np.transpose(song_data)
         try:
             all_song_data = np.concatenate((all_song_data, song_data), axis=0)
         except NameError:
