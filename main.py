@@ -40,17 +40,18 @@ def evaluate(model, val_loader):
         predictions = model.forward(feats)
         total_corr += find_num_correct(predictions, labels)
         #print(total_corr)
-    #print(len(val_loader.dataset))
+    print(total_corr)
+    #print(val_loader.dataset)
     return float(total_corr)/len(val_loader.dataset)
 
 
 data_filepath = "./final_data"
 
 # HYPERPARAMETERS
-batch_size = 20
-learn_rate = 0.001  # Decreases with epoch
+batch_size = 10
+learn_rate = 0.0005  # Decreases with epoch
 MaxEpochs = 500
-eval_every = 20
+eval_every = 50
 num_genres = 4
 input_dimensions = (100, 2000)
 
@@ -62,7 +63,7 @@ val_loader = DataLoader(val_data, batch_size=batch_size, shuffle=False)
 model = ConvClassifier2D(batch_size, num_genres, input_dimensions)  # ConvClassifier1D() for raw audio, ConvClassifier2D() for Fourier transformed data
 model = model.to(device)
 loss_fnc = torch.nn.BCELoss()
-#optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
+optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
 
 leftover = 0
 step_list = []
@@ -73,8 +74,8 @@ best_val_acc = 0
 
 tot_corr = 0
 for counter, epoch in enumerate(range(MaxEpochs)):
-    optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
-    learn_rate = learn_rate/1.1 # Decrease every epoch
+    #optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
+    #learn_rate = learn_rate / 1.1 # Decrease every epoch
     for i, batch in enumerate(train_loader):
         feats, labels = batch
         feats = feats.to(device)
@@ -91,6 +92,7 @@ for counter, epoch in enumerate(range(MaxEpochs)):
         # Evaluate and log losses and accuracies for plotting
         if ((i + leftover) % eval_every == 0) and ((i + leftover) != 0):  # Leftover makes sure that even if batch size goes over, you graph every eval_evry steps
             val_acc = evaluate(model, val_loader)
+            #print(tot_corr)
             train_acc = float(tot_corr / (eval_every * batch_size))
             print("Batch", i, ": Total correct in last", eval_every, "batches is", tot_corr,
                   "out of ", eval_every * batch_size)

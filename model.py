@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from torch import tensor
+import torch
 
 num_processed = 1
 num_ks_1 = 50
@@ -68,9 +69,9 @@ class ConvClassifier2D(nn.Module):
         super(ConvClassifier2D, self).__init__()
         self.num_processed = 1
         self.num_ks = [10, 10, 10, 10]
-        self.k_size = [(3, 2000), (20, 1), (5, 1), (5, 1)]
+        self.k_size = [(1, 2000), (20, 1), (5, 1), (5, 1)]
         self.pool = [(1, 1), (1, 1), (1, 1), (1, 1)]
-        self.hid_layers = [30, 10, num_of_genres]
+        self.hid_layers = [50, 10, num_of_genres]
         self.batch_size = batch_size
         self.input_dimensions = input_dimensions
 
@@ -80,9 +81,9 @@ class ConvClassifier2D(nn.Module):
             a = int((a - self.k_size[i][0] + 1) / self.pool[i][0])
             b = int((b - self.k_size[i][1] + 1) / self.pool[i][1])
 
-        self.input_size = 60 #a * b * self.num_ks[-1]
+        self.input_size = 200 #a * b * self.num_ks[-1]
 
-        self.conv1 = nn.Conv2d(self.num_processed, self.num_ks[0], self.k_size[0], stride=2).float()
+        self.conv1 = nn.Conv2d(self.num_processed, self.num_ks[0], self.k_size[0], stride=5).float()
         self.pool1 = nn.MaxPool2d(self.pool[0])
         self.conv2 = nn.Conv2d(self.num_ks[0], self.num_ks[1], self.k_size[1], stride=2).float()
         self.pool2 = nn.MaxPool2d(self.pool[1])
@@ -99,17 +100,20 @@ class ConvClassifier2D(nn.Module):
         x = (x.unsqueeze(1)).float()
         #print(x.shape)
         x = self.conv1(x)
+        #print(torch.mean(x, 0), torch.var(x, 0))
+        #x = F.batch_norm(x, torch.mean(x, 0), torch.var(x, 0))
+        x = F.dropout(x)
         #print(x.shape)
-        x = self.pool1(x)
+        #x = self.pool1(x)
         #print(x.shape)
         x = self.conv2(x)
-        x = self.conv3(x)
+        #x = self.conv3(x)
         #x = self.conv4(x)
         #print(x.shape)
         x = x.view(self.batch_size, -1)  # Convert feature maps for each song in batch into 1-d array
         #print(x.shape)
-        x = self.fc1(x)
-        x = self.fc2(x)
+        #x = self.fc1(x)
+        #x = self.fc2(x)
         x = self.fc3(x)
         x = F.softmax(x)
         #print(x.shape)
