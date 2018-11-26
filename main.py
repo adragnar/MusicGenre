@@ -53,14 +53,21 @@ learn_rate = 0.0005  # Decreases with epoch
 MaxEpochs = 500
 eval_every = 50
 num_genres = 4
-input_dimensions = (100, 2000)
+input_dimensions = (100, 13, 4)  # Reshape to (13, 4, 100)
+embedding_dim = 100
+rnn_hidden_dim = 50
 
-train_data = SongDataset(os.path.join(data_filepath, "train_data.npy"), os.path.join(data_filepath, "train_labels.npy"))
-val_data = SongDataset(os.path.join(data_filepath, "val_data.npy"), os.path.join(data_filepath, "val_labels.npy"))
+train_feats = os.path.join(data_filepath, "train_data.npy")
+val_feats = os.path.join(data_filepath, "val_data.npy")
+
+train_data = SongDataset(train_feats, os.path.join(data_filepath, "train_labels.npy"))
+val_data = SongDataset(val_feats, os.path.join(data_filepath, "val_labels.npy"))
 train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
 val_loader = DataLoader(val_data, batch_size=batch_size, shuffle=False)
 
-model = ConvClassifier2D(batch_size, num_genres, input_dimensions)  # ConvClassifier1D() for raw audio, ConvClassifier2D() for Fourier transformed data
+#model = ConvClassifier2D(batch_size, num_genres, input_dimensions)  # ConvClassifier1D() for raw audio, ConvClassifier2D() for Fourier transformed data
+
+model = RNNClassifier(embedding_dim, rnn_hidden_dim, num_genres)
 model = model.to(device)
 loss_fnc = torch.nn.BCELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
@@ -78,6 +85,9 @@ for counter, epoch in enumerate(range(MaxEpochs)):
     #learn_rate = learn_rate / 1.1 # Decrease every epoch
     for i, batch in enumerate(train_loader):
         feats, labels = batch
+        feats = feats.reshape((batch_size, 100, 52))
+        feats = feats.reshape((batch_size, 52, 100))
+        print(feats.shape)
         feats = feats.to(device)
         labels = labels.to(device)
         optimizer.zero_grad()

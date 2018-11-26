@@ -216,5 +216,5 @@ if __name__ == "__main__":
     #pick_samples("data/classical_songs_normalized.npy", 1000)
 
     #concat_data_and_gen_labels("data/norm_data")
-    fourier_transform("final_data/all_songs.npy")
-    #split_data("./final_data/mfcc_feats.npy", "./final_data/all_labels.npy")
+    #fourier_transform("final_data/all_songs.npy")
+    split_data("./final_data/mfcc_feats.npy", "./final_data/all_labels.npy")
