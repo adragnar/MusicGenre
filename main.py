@@ -54,8 +54,8 @@ MaxEpochs = 500
 eval_every = 50
 num_genres = 4
 input_dimensions = (100, 13, 4)  # Reshape to (13, 4, 100)
-embedding_dim = 100
-rnn_hidden_dim = 50
+embedding_dim = 52
+rnn_hidden_dim = 100
 
 train_feats = os.path.join(data_filepath, "train_data.npy")
 val_feats = os.path.join(data_filepath, "val_data.npy")
@@ -85,8 +85,8 @@ for counter, epoch in enumerate(range(MaxEpochs)):
     #learn_rate = learn_rate / 1.1 # Decrease every epoch
     for i, batch in enumerate(train_loader):
         feats, labels = batch
-        feats = feats.reshape((batch_size, 100, 52))
-        feats = feats.reshape((batch_size, 52, 100))
+        feats = (feats.reshape((batch_size, 100, 52))).permute(1,0,2)
+        #feats = feats.reshape((batch_size, 52, 100))
         print(feats.shape)
         feats = feats.to(device)
         labels = labels.to(device)
@@ -97,7 +97,6 @@ for counter, epoch in enumerate(range(MaxEpochs)):
         optimizer.step()
 
         tot_corr += find_num_correct(predictions, labels)
-        #print(1)
 
         # Evaluate and log losses and accuracies for plotting
         if ((i + leftover) % eval_every == 0) and ((i + leftover) != 0):  # Leftover makes sure that even if batch size goes over, you graph every eval_evry steps

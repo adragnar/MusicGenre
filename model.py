@@ -130,6 +130,7 @@ class RNNClassifier(nn.Module):
         self.linear = nn.Linear(hidden_dim, num_genres)
 
     def forward(self, x):
+        x = x.float()
         output, h_n = self.gru(x) # or x.transpose(0, 1)
         x = h_n[0].float()
         print(x.shape)
