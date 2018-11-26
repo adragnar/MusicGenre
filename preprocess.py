@@ -209,12 +209,13 @@ if __name__ == "__main__":
     #normalize_data("data/rock_songs.npy")
 
     # Make sure there are same number of samples for each of rock, pop, and rap songs - put into data folder
-    #pick_samples("data/rock_songs_normalized.npy", 1000)
-    #pick_samples("data/rap_songs_normalized.npy", 1000)
-    #pick_samples("data/pop_songs_normalized.npy", 1000)
-    #pick_samples("data/jazz_songs_normalized.npy", 1000)
-    #pick_samples("data/classical_songs_normalized.npy", 1000)
+    # pick_samples("data/rock_songs_normalized.npy", 30)
+    # pick_samples("data/rap_songs_normalized.npy", 30)
+    # pick_samples("data/pop_songs_normalized.npy", 30)
+    # pick_samples("data/jazz_songs_normalized.npy", 30)
+    # pick_samples("data/classical_songs_normalized.npy", 30)
 
     #concat_data_and_gen_labels("data/norm_data")
     fourier_transform("final_data/all_songs.npy")
-    #split_data("./final_data/mfcc_feats.npy", "./final_data/all_labels.npy")
+
+    split_data("./final_data/mfcc_feats.npy", "./final_data/all_labels.npy")
