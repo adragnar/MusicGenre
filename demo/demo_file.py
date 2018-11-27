@@ -10,6 +10,7 @@ import youtube_dl
 import sounddevice as sp
 from preprocess import fourier_transform
 
+logistics_path = '/Users/RobertAdragna/Documents/Third\ Year/Fall\ Term/MIE\ 324\ -\ Introduction\ to\ Machine\ Intelligence/mie324/mie324_final_project/logisitcs'
 
 def download_youtube_song(url):
     ydl_opts = {
@@ -33,23 +34,27 @@ def get_cut_sample(song_path):
     return y[start:end]
 
 def mmfc_transform(song_array):
-    return fourier_transform(song_array, True)
+    song_array = np.expand_dims(song_array, 0)
+    val = fourier_transform(song_array, True)
+    val = (val.reshape((1, 100, 52)))
+    val = np.swapaxes(val, 0, 1)
+    return val
 
 def run_demo():
     '''Launch command line demo that prompts user to input song, plays it back, and then predicts'''
 
     while True:
-        # mp3_path = input('Enter the youtube URL to your song \n')
-        #
-        # os.chdir('./demo_songs')
-        # download_youtube_song(mp3_path)
-        # os.chdir('..')
-        #
-        # for filename in os.listdir('./demo_songs'):
-        #     if filename == '.DS_Store':
-        #         os.remove(os.path.join('./demo_songs', filename))
-        #     else:
-        #         os.rename(os.path.join('./demo_songs', filename), os.path.join('./demo_songs', "curr_song.mp3"))
+        mp3_path = input('Enter the youtube URL to your song \n')
+
+        os.chdir('./demo_songs')
+        download_youtube_song(mp3_path)
+        os.chdir('..')
+
+        for filename in os.listdir('./demo_songs'):
+            if filename == '.DS_Store':
+                os.remove(os.path.join('./demo_songs', filename))
+            else:
+                os.rename(os.path.join('./demo_songs', filename), os.path.join('./demo_songs', "curr_song.mp3"))
 
         mp3_path = os.path.join("demo_songs", "curr_song.mp3")
 
@@ -57,17 +62,22 @@ def run_demo():
         sp.play(song_array, 22050)
         transformed_song_array = mmfc_transform(song_array)
 
-        model = torch.load("best_model.pt")
-        results = model.predict(song_array)
+        input('This is the song sample we used for prediction. Continue? \n')
 
-        num_to_label = json.load("num_to_label.json")
+        model = torch.load(os.path.join(logistics_path, "best_model.pt"), map_location='cpu')
+        results = model.forward(torch.tensor(transformed_song_array))
+
+        num_to_label = json.loads(open(os.path.join(logistics_path, "num_to_label.json")).read())
         confidence = []
-        for i in range (0, len(results)):
-            confidence.append(num_to_label[results[i]])
+        for i in range (0, len(results[0])):
+            confidence.append(float(results[0][i]))
 
-        for i in range(0, len(results)):
-            print(str(num_to_label[i]), " :", confidence[i], " -- ")
+        for i in range(0, len(results[0])):
+            print(str(num_to_label[str(i)]), " :", confidence[i], " -- ")
         print ('\n')
+
+        for filename in os.listdir('./demo_songs'):
+            os.remove(os.path.join('./demo_songs', filename))
 
 if __name__ == '__main__':
     run_demo()
